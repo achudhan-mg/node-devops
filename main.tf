@@ -9,10 +9,6 @@ resource "aws_instance" "web" {
   user_data = <<-EOF
               #!/bin/bash
               sudo apt update -y
-              #sudo apt install apache2 -y
-              #sudo systemctl start apache2
-              #sudo bash -c 'echo your very first web server > /var/www/html/index.html'
-              sudo apt update
               sudo apt install -y nginx
               EOF
   tags = {
@@ -20,7 +16,7 @@ resource "aws_instance" "web" {
   }
 
   root_block_device {
-    volume_size           = "25"
+    volume_size           = "10"
     volume_type           = "gp2"
     encrypted             = false
     delete_on_termination = true
@@ -50,6 +46,13 @@ resource "aws_security_group" "web" {
     description = "SSH"
     from_port = 22
     to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    description = "Custom"
+    from_port = 3000
+    to_port = 3000
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
